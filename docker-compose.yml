@@ -1,39 +1,41 @@
 version: "3.8"
 services:
   # Frontend-backend communication
-  web:
+  www:
     build: 
       context: ./www
     ports:
-      - "8080:${WEB_PORT}"
-    volumes:
-      - website-data:/app
+      - 8080:3000
     networks:
-      - frontend
-      - backend
+      - public
 
   # Susbscriptions api
-  api:
+  subscriptions:
     build: 
       context: ./subscriptions
     networks:
-      - backend
-      - local
+      - public
+      - private
 
   # RabbitMQ worker
-  worker:
+  mailing:
     build: 
       context: ./mailing
     networks:
-      - local
+      - private
 
-networks:
-  frontend:
-  backend:
-  local:
+  # RabbitMQ 
+  rabbitmq:
+    image: rabbitmq:3
+    volumes:
+      - "./rabbitmq/db:/var/lib/rabbitmq"
+    networks:
+      - private
 
 volumes:
-  website-data:
-  api-data:
-  worker-data:
-  db-data:
+  rabbitmq:
+
+networks:
+  public:
+  private:
+    internal: true
