@@ -1,3 +1,5 @@
+![alt text](https://github.com/juanbernal98/adidas-nodejs-challenge-2021/blob/main/image.jpg?raw=true)
+
 # Introduction
 Newsletter microservice archiqutecture designed to scale horizontally using docker.
 
@@ -36,3 +38,4 @@ Requirements needed to make it work:
 
 ### Bring up the containers
 `docker-compose up -d`
+This action will generate a new folder `./rabbitmq/db` where container "rabbitmq" will store its database contents.
