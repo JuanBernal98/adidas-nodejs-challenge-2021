@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  # Frontend-backend communication
+  web:
+    build: 
+      context: web
+    ports:
+      - "8080:${WEB_PORT}"
+    volumes:
+      - website-data:/app/src
+    networks:
+      - frontend
+      - backend
+
+  # Susbscriptions api
+  api:
+    build: 
+      context: subscriptions-api
+    networks:
+      - backend
+      - local
+
+  # RabbitMQ worker
+  worker:
+    build: 
+      context: mailing-service
+    networks:
+      - local
+
+networks:
+  frontend:
+  backend:
+  local:
+
+volumes:
+  website-data:
+  api-data:
+  worker-data:
+  db-data:
