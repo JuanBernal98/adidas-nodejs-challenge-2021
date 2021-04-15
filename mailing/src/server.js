@@ -1,21 +1,41 @@
 const amqp = require('amqplib/callback_api');
 
-var host = process.env.RABBITMQ_HOST || 'localhost';
+var host = process.env.RABBITMQ_HOST || 'rabbitmq';
 var port = process.env.RABBITMQ_PORT || '5672';
 
 // Connect to RabbitMQ
-amqp.connect(`amqp://${host}:${port}`, function (error0, connection) {
-    if (error0) 
-        throw error0;
+amqp.connect(`amqp://${host}:${port}`, function (err, conn) {
+    // check err
+    if (err) {
+        throw err;
+    }
+
+    conn.on("error", function (err) {
+        if (err.message !== "Connection closing") {
+            console.error("[AMQP] conn error", err.message);
+        }
+    });
+
+    conn.on("close", function () {
+        console.error("[AMQP] reconnecting");
+    });
+
     // Connect to the channel
-    connection.createChannel(function (error1, channel) {
+    conn.createChannel(function (err, ch) {
         var queue = 'emails';
-        channel.assertQueue(queue); // validate queue
-        channel.consume(queue, function(data){
-            // We retrieve the message
-            var message = data.content;
-            // Send mail
-            console.log(message);
+        ch.assertQueue(queue, { durable: true }, function (err, _ok) {
+            if(err)
+                throw err;
+            ch.consume(queue, processMsg, { noAck: false });
         });
     });
 });
+
+/**
+ * 
+ * @param {amqp.Message} msg 
+ */
+function processMsg(msg) {
+    // parse json & send email
+    console.log('msg sent');
+}

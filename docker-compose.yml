@@ -8,6 +8,7 @@ services:
       - 8080:3000
     networks:
       - public
+    restart: always
 
   # Susbscriptions api
   subscriptions:
@@ -16,13 +17,7 @@ services:
     networks:
       - public
       - private
-
-  # RabbitMQ worker
-  mailing:
-    build: 
-      context: ./mailing
-    networks:
-      - private
+    restart: always
 
   # RabbitMQ 
   rabbitmq:
@@ -31,6 +26,22 @@ services:
       - "./rabbitmq/db:/var/lib/rabbitmq"
     networks:
       - private
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+    restart: always
+
+  # RabbitMQ worker
+  mailing:
+    build: 
+      context: ./mailing
+    depends_on:
+      - rabbitmq
+    networks:
+      - private
+    restart: always
 
 volumes:
   rabbitmq:
