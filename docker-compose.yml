@@ -3,11 +3,11 @@ services:
   # Frontend-backend communication
   web:
     build: 
-      context: web
+      context: ./www
     ports:
       - "8080:${WEB_PORT}"
     volumes:
-      - website-data:/app/src
+      - website-data:/app
     networks:
       - frontend
       - backend
@@ -15,7 +15,7 @@ services:
   # Susbscriptions api
   api:
     build: 
-      context: subscriptions-api
+      context: ./subscriptions
     networks:
       - backend
       - local
@@ -23,7 +23,7 @@ services:
   # RabbitMQ worker
   worker:
     build: 
-      context: mailing-service
+      context: ./mailing
     networks:
       - local
 
