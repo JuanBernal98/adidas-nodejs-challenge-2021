@@ -3,4 +3,4 @@ WORKDIR /app
 COPY package*.json .
 RUN npm install
 COPY . .
-CMD ["node", "/app/sssc/index.js"]
+CMD ["node", "src/server.js"]
