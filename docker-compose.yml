@@ -2,49 +2,61 @@ version: "3.8"
 services:
   # Frontend-backend communication
   www:
+    restart: always
     build: 
       context: ./www
     ports:
       - 8080:3000
     networks:
       - public
-    restart: always
 
   # Susbscriptions api
   subscriptions:
+    restart: always
     build: 
       context: ./subscriptions
+    ports:
+      - 8081:3000
     networks:
       - public
       - private
-    restart: always
+
+  # MongoDB
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    networks:
+      - private
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./mongodb:/data/db
 
   # RabbitMQ 
   rabbitmq:
     image: rabbitmq:3
+    restart: always
     volumes:
       - "./rabbitmq/db:/var/lib/rabbitmq"
     networks:
       - private
     healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-      interval: 5s
-      timeout: 15s
-      retries: 1
-    restart: always
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   # RabbitMQ worker
   mailing:
+    restart: always
     build: 
       context: ./mailing
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - private
-    restart: always
-
-volumes:
-  rabbitmq:
 
 networks:
   public:
