@@ -16,11 +16,15 @@ app.post('/subscription/new', (req, res) => {
     var subscription = req.body;
     axios.post('/subscription', subscription)
         .then(function (response) {
-            var id = response.data // new subscription id
+            var id = response.data; // new subscription id
             res.send(id);
         })
         .catch(function (error) {
-            res.send(error.data);
+            if (error.response) {
+                res.status(error.response.status).send(error.response.data);
+            } else {
+                res.status(500).send('An unknown error occurred.');
+            }
         });
 });
 

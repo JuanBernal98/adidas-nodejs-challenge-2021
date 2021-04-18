@@ -19,17 +19,17 @@ There are two defined **networks**:
 - public
 - private
 
-| Container     | Description                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------------- |
-| www           | Backend that communicates with our subscriptions api.                                                 |
-| subscriptions | API that communicates with rabbitmq.                                                                  |
-| mongodb       | Database to store subscriptions related content. NoSQL                                                |
-| rabbitmq      | Enqueue messages to send them asynchronously. Wait for this container to fully load when booting. |
-| mailing       | Process the queue and send the message reading rabbitmq. Will not work until rabbitmq is fully loaded.    |
+| Container     | Description                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| www           | Backend that communicates with our subscriptions api.                                                  |
+| subscriptions | API that communicates with rabbitmq.                                                                   |
+| mongodb       | Database to store subscriptions related content. NoSQL                                                 |
+| rabbitmq      | Enqueue messages to send them asynchronously. Wait for this container to fully load when booting.      |
+| mailing       | Process the queue and send the message reading rabbitmq. Will not work until rabbitmq is fully loaded. |
 
 | Container     | Private            | Public             |
 | ------------- | ------------------ | ------------------ |
-| wwww          | :x:                | :heavy_check_mark: |
+| www           | :x:                | :heavy_check_mark: |
 | subscriptions | :heavy_check_mark: | :heavy_check_mark: |
 | mongodb       | :heavy_check_mark: | :x:                |
 | rabbitmq      | :heavy_check_mark: | :x:                |
@@ -52,7 +52,7 @@ Start the containers by running `docker-compose up -d`. It will start the contai
 
 ## Security
 
-When sending any request from the public to the private network we must check the request origin. The simplest way to implement this security layer is by comparing a secret phrase on the backend. CORS its a great alternative. 
+When sending any request from the public to the private network we must check the request origin. The simplest way to implement this security layer is by comparing a secret phrase on the backend. CORS its a great alternative.
 
 The mail system should send templates by reading the newsletter id. Mail content cannnot be altered by any user as it is predefined by the attribute. Even if security measures fail and malicious attacks are performed that would not be a problem.
 
@@ -71,3 +71,30 @@ Images listed down below have `/app` folder as WORKDIR to store its nodejs code.
 Currently using `axios` package to make requests between containers.
 
 Depending on the application given to the software it might be better to have emails as primary key, and newsletters as a relation.
+
+Subscriptions cannot be duplicated when creating them throught the API request. Restriction made up by looking the newsletter and email fields. This requirement is not a Schema validation.
+
+### Development+
+
+Further development folder structure should continue express standards. This has been our goals developing.
+Current code needs improvement.
+
+```
+src
+│   app.js          # App entry point
+└───api             # Express route controllers for all the endpoints of the app
+└───config          # Environment variables and configuration related stuff
+└───jobs            # Jobs definitions for agenda.js
+└───loaders         # Split the startup process into modules
+└───models          # Database models
+└───services        # All the business logic is here
+└───subscribers     # Event handlers for async task
+└───types           # Type declaration files (d.ts) for Typescript
+```
+
+## Suggestions
+
+- Refactor code and make it cleaner. Separate RabbitMQ enqueuer functions from the routes files.
+- Make environments variables to define some options. Examples: ports, hostnames...
+- Improve security by adding CORS or secret keys in our backend requests.
+- Improve error handling and decide what to do in case our messsage broker fails at subscription creation.

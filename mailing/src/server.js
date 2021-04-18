@@ -8,8 +8,7 @@ open.then(function (conn) {
     return ch.assertQueue(queue).then(function (ok) {
         return ch.consume(queue, function (msg) {
             if (msg !== null) {
-                var subscription = JSON.parse(msg.content.toString());
-                console.log(subscription);
+                var subscription = JSON.parse(msg.content.toString()); // object
                 processSubscription(subscription);
                 ch.ack(msg);
             }
