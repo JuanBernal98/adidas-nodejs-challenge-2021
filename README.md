@@ -6,7 +6,7 @@ Newsletter microservices architecture designed to scale horizontally using docke
 
 ## Basic information
 
-We find 5 defined services
+We find five defined services:
 
 - www
 - subscriptions
@@ -14,7 +14,7 @@ We find 5 defined services
 - rabbitmq
 - mailing
 
-There are 2 defined networks
+There are two defined networks:
 
 - public
 - private
@@ -25,7 +25,7 @@ There are 2 defined networks
 | subscriptions | API that communicates with rabbitmq.                                                                  |
 | mongodb       | Database to store subscriptions related content. NoSQL                                                |
 | rabbitmq      | Enqueue messages to send them asynchronously. Wait for this container to fully load when booting. |
-| mailing       | Process the queue and send the message reading rabbitmq. Won't work until rabbitmq is fully loaded.    |
+| mailing       | Process the queue and send the message reading rabbitmq. Will not work until rabbitmq is fully loaded.    |
 
 | Container     | Private            | Public             |
 | ------------- | ------------------ | ------------------ |
