@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const amqlib = require('amqplib/callback_api');
 const Subscription = require('../models/subscription');
 
 // moongodb connection
@@ -15,6 +16,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
     console.log('mongodb connected');
 });
+
 
 /**
  * All subscriptions
@@ -43,17 +45,8 @@ router.get('/subscription/:id', function (req, res) {
 router.post('/subscription', function (req, res) {
     Subscription.create(req.body, function (err, object) {
         if (err) handleError(err, res); // ERROR
+        enqueueSubscription(object, res);
         res.send(object.id);
-    });
-});
-
-/**
- * Update subscription
- */
-router.put('/subscription', function (req, res) {
-    // Update by _id find
-    const subscription = Subscription.findOneAndUpdate({ id: req.body.id }, req.body, {
-        new: true
     });
 });
 
@@ -69,6 +62,29 @@ router.delete('/subscription/:id', function (req, res) {
 
 function handleError(err, res) {
     res.send(err + 'error');
+}
+
+/* RabbitMQ
+-------------------------------- */
+const queue = 'emails';
+const rabbitmqConnection = 'rabbitmq';
+
+/**
+ * Connects to RabbitMQ and sends subscription
+ */
+function enqueueSubscription(subscription, res) {
+    amqlib.connect(`amqp://${rabbitmqConnection}`, function (err, conn) {
+        if (err != null) handleError(err);
+        conn.createChannel((err, ch) => {
+            if (err != null) enqueueFailed(err, res);
+            ch.assertQueue(queue);
+            ch.sendToQueue(queue, Buffer.from(JSON.stringify(subscription)));
+        });
+    });
+}
+
+function enqueueFailed(err, res) {
+    res.send(err);
 }
 
 module.exports = router;
