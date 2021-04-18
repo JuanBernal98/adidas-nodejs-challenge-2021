@@ -48,7 +48,7 @@ Use git to download the files by cloning the repository `git clone https://githu
 
 ### Bring up the containers
 
-Start the containers by running `docker-compose up -d`. It will start the contains and generate new folders like `./rabbitmq/db` where container "rabbitmq" will store its database contents. This happens due to the current docker-compose configuration.
+Start the containers by running `docker-compose up -d`. It will start the containers and generate new folders like `./rabbitmq/db` where container "rabbitmq" will store its database contents. This happens due to the current docker-compose configuration.
 
 ## Security
 
@@ -69,3 +69,5 @@ Images listed down below have `/app` folder as WORKDIR to store its nodejs code.
 - mailing
 
 Currently using `axios` package to make requests between containers.
+
+Depending on the application given to the software it might be better to have emails as primary key, and newsletters as a relation.
