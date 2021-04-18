@@ -6,7 +6,7 @@ Newsletter microservices architecture designed to scale horizontally using docke
 
 ## Basic information
 
-We find five defined services:
+We find five defined **services**:
 
 - www
 - subscriptions
@@ -14,7 +14,7 @@ We find five defined services:
 - rabbitmq
 - mailing
 
-There are two defined networks:
+There are two defined **networks**:
 
 - public
 - private
