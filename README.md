@@ -50,6 +50,8 @@ Use git to download the files by cloning the repository `git clone https://githu
 
 Start the containers by running `docker-compose up -d`. It will start the containers and generate new folders like `./rabbitmq/db` where container "rabbitmq" will store its database contents. This happens due to the current docker-compose configuration.
 
+The idea is to only run the images from dockerhub
+
 ## Security
 
 When sending any request from the public to the private network we must check the request origin. The simplest way to implement this security layer is by comparing a secret phrase on the backend. CORS its a great alternative.
@@ -99,3 +101,4 @@ src
 - Decide HTTPS/HTTP, speed may be affected.
 - Use docker swarm to manage the our docker cluster.
 - Set up CI/CD 
+- Consider the use of Apache Kafka for real development
