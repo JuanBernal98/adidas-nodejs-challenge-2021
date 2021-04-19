@@ -91,6 +91,11 @@ src
 └───services        # All services logic is here (amqplib connector, etc)
 ```
 
+## Unit testing
+
+Used postman to test the api `docker-compose run subscriptions npm run test`. Unit testing needs more development.
+Subscriptions routes testing: `/app/src/test/subscriptions.test.js`
+
 ## Improvements and suggestions
 
 - Refactor code and make it cleaner. Separate RabbitMQ enqueuer functions from the routes files.
@@ -100,5 +105,5 @@ src
 - Improve error handling and decide what to do in case our messsage rabbitmq fails at subscription creation.
 - Decide HTTPS/HTTP, speed may be affected.
 - Use docker swarm to manage the our docker cluster.
-- Set up CI/CD 
+- Set up CI/CD
 - Consider the use of Apache Kafka for real development
