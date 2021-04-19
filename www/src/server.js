@@ -31,3 +31,5 @@ app.post('/subscription/new', (req, res) => {
 app.listen(port, () => {
     console.log(`www container server ready`);
 })
+
+module.exports = app;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/test/*.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +12,9 @@
     "amqplib": "^0.7.1",
     "express": "^4.17.1",
     "mongoose": "^5.12.4"
+  },
+  "devDependencies": {
+    "mocha": "^8.3.2",
+    "supertest": "^6.1.3"
   }
 }

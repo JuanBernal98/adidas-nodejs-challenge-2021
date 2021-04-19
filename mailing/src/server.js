@@ -30,5 +30,5 @@ function restriveTemplate(newsletter) {
 }
 
 function sendTemplate(template, email) {
-    // send
+    // send email with the template, nodemailer if needed. smtp relay?
 }
