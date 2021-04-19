@@ -74,27 +74,28 @@ Depending on the application given to the software it might be better to have em
 
 Subscriptions cannot be duplicated when creating them throught the API request. Restriction made up by looking the newsletter and email fields. This requirement is not a Schema validation.
 
-### Development+
+### Development Information
 
-Further development folder structure should continue express standards. This has been our goals developing.
+Further development folder structure should continue express standards. Down below structure has been our goals when developing.
 Current code needs improvement.
 
 ```
+# File names may vary
 src
-│   app.js          # App entry point
-└───api             # Express route controllers for all the endpoints of the app
+│   server.js       # App entry point
+└───routes          # Express route controllers for all the endpoints of the app
 └───config          # Environment variables and configuration related stuff
-└───jobs            # Jobs definitions for agenda.js
-└───loaders         # Split the startup process into modules
 └───models          # Database models
-└───services        # All the business logic is here
-└───subscribers     # Event handlers for async task
-└───types           # Type declaration files (d.ts) for Typescript
+└───services        # All services logic is here (amqplib connector, etc)
 ```
 
-## Suggestions
+## Improvements and suggestions
 
 - Refactor code and make it cleaner. Separate RabbitMQ enqueuer functions from the routes files.
-- Make environments variables to define some options. Examples: ports, hostnames...
-- Improve security by adding CORS or secret keys in our backend requests.
-- Improve error handling and decide what to do in case our messsage broker fails at subscription creation.
+- Improve container rabbitmq healthycheck.
+- Make environments variables to define important vars. Examples: ports, hostnames...
+- Improve security by adding CORS or a secret api check in our public-private backend communication.
+- Improve error handling and decide what to do in case our messsage rabbitmq fails at subscription creation.
+- Decide HTTPS/HTTP, speed may be affected.
+- Use docker swarm to manage the our docker cluster.
+- Set up CI/CD 

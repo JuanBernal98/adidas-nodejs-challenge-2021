@@ -1,0 +1,112 @@
+swagger: "2.0"
+info:
+  description: "This is a simple documentation for the NodeJS - Adidas Coding Challenge subscriptions API"
+  version: "1.0.0"
+  title: "Adidas Coding Challenge - Subscriptions"
+  contact:
+    email: "bernalsierrajuan@gmail.com"
+host: "localhost"
+basePath: "/api"
+tags:
+- name: "Subscriptions"
+paths:
+  /subscriptions:
+    get:
+      summary: List all subscriptions
+      tags:
+        - "Subscriptions"
+      responses:
+        '200':
+          description: "List all subscriptions"
+  /subscription/{id}:
+    get:
+      summary: Get subscription details
+      tags:
+        - "Subscriptions"
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Subscription ID"
+      responses:
+        '200':
+          description: "Returns Subscription(object)"
+        '404':
+          description: "Subscription not found"
+    delete:
+      summary: Delete subscription
+      tags:
+        - "Subscriptions"
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: "Subscription ID"
+      responses:
+        '200':
+          description: "OK"
+        '404':
+          description: "Subscription not found"
+  /subscription:
+    post:
+      summary: Create new subscription
+      tags:
+        - "Subscriptions"
+      parameters:
+        - in: body
+          name: subscription
+          description: The subscription to create
+          schema:
+            type: object
+            required:
+              - newsletter
+              - email
+              - birth
+              - conset
+            properties:
+              newsletter:
+                type: integer
+              email:
+                type: string
+              name:
+                type: string
+              gender:
+                type: string
+                enum:
+                  - "m"
+                  - "f"
+              birth:
+                type: string
+              consent:
+                type: boolean
+      responses:
+        '200':
+          description: "Returns the ID of the created subscription."
+        '409':
+          description: "Subscription already exists."
+        '400':
+          description: "Validation error. Invalid format field given"
+definitions:
+  Subscription:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      newsletter:
+        type: "integer"
+        format: "int32"
+      email:
+        type: "string"
+      name:
+        type: "string"
+      gender:
+        type: "string"
+        enum:
+          - "m"
+          - "f"
+      birth:
+        type: "string"
+      consent:
+        type: "boolean"

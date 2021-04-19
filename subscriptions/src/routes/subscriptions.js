@@ -46,7 +46,7 @@ router.get('/subscription/:id', function (req, res) {
 router.post('/subscription', function (req, res) {
     Subscription.findOne({ newsletter: req.body.newsletter, email: req.body.email }, (err, subscription) => {
         if (err) return handleError(err, res); // ERROR
-        if (subscription !== null) return res.status(400).send('Subscription already exists');
+        if (subscription !== null) return res.status(409).send('Subscription already exists');
         Subscription.create(req.body, function (err, object) {
             if (err) return handleError(err, res); // ERROR
             enqueueSubscription(object, res);
