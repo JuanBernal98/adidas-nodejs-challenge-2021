@@ -96,6 +96,8 @@ src
 Used postman to test the api `docker-compose run subscriptions npm run test`. Unit testing needs more development.
 Subscriptions routes testing: `/app/src/test/subscriptions.test.js`
 
+When finished, add to Dockerfile CMD["node", "run", "test"]
+
 ## Improvements and suggestions
 
 - Refactor code and make it cleaner. Separate RabbitMQ enqueuer functions from the routes files.
