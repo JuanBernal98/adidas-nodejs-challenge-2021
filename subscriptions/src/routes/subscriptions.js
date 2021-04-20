@@ -28,6 +28,14 @@ router.get('/subscription/:id', function (req, res) {
  * Create subscription
  */
 router.post('/subscription', function (req, res) {
+    // Empty?
+    if (!req.body.newsletter) return res.status(400).send('Newsletter is required');
+    if (!req.body.email) return res.status(400).send('Email is required');
+
+    // Typeof validate 
+    if (typeof req.body.newsletter !== 'number') return res.status(400).send('Invalid newsletter');
+    if (typeof req.body.email !== 'string') return res.status(400).send('Invalid email');
+
     Subscription.findOne({ newsletter: req.body.newsletter, email: req.body.email }, (err, subscription) => {
         if (err) return handleError(err, res); // ERROR
         if (subscription !== null) return res.status(409).send('Subscription already exists');
@@ -49,9 +57,8 @@ router.delete('/subscription/:id', function (req, res) {
     });
 });
 
-/**
- * Error handling
- */
+/* ERROR HANDLING
+-------------------------------- */
 function handleError(err, res) {
     try {
         switch (err.name) {

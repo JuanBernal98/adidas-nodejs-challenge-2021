@@ -122,13 +122,13 @@ Start all the containers, then run the test files to operate with the database.
 - `docker-compose up -d --build`
 - `docker-compose run subscriptions npm run test`
 
-## Sengin emails
+## Sending emails
 
 Although I have not configured any email library related, i do have configured the message broker. Right now the RabbitMQ consummer would need to find the newsletter template and send the email to the `subscription.email`. 
 
-For production environments consider developing with Apache Kafka.
+For production environments consider using Apache Kafka.
 
-Use any SMTP Relay to get a fast email deliverability without the need to configure a server.
+Use any SMTP Relay to get a fast email deliverability without the need of configuring a server.
 
 ## Improvements and suggestions
 

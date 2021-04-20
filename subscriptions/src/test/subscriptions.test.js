@@ -86,6 +86,23 @@ describe('Subscriptions', () => {
                 });
         });
 
+        // Invalid field
+        it("Fields should have a valid format", (done) => {
+            chai.request(app)
+                .post('/api/subscription')
+                .send({
+                    "newsletter": "string", // not int
+                    "email": "testadidas.com", // wrong email
+                    "birth": "whatisthisdate", // not date
+                    "name": "name",
+                    "gender": "adidas gazelle", // not a gender?
+                })
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    done();
+                });
+        });
+
         // Trying to create a subscription
         it("Should return the ID of the created subscription without optional fields [name, gender]", (done) => {
             chai.request(app)
