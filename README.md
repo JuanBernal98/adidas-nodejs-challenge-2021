@@ -47,8 +47,8 @@ Two requirements to make it work:
 Clone the repository. Build the containers. Run the test.
 
 - `git clone https://github.com/JuanBernal98/adidas-nodejs-challenge-2021`
-- `docker-compose up -d --build`
-- `docker-compose run subscriptions npm run test`
+- `docker-compose up -d --build` 
+- `docker-compose run subscriptions npm run test` (Let containers to fully load folders/files before running the test.)
 
 ## Security
 
