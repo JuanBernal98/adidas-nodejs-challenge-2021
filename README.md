@@ -78,10 +78,26 @@ In this coded challenge, **subscriptions cannot be duplicated when created via o
 
 **Restriction has been made up by looking the newsletter and email fields**. This restriction is not made by the database structure, has been made at the request.
 
+### www
+This container have public access. It communicates with our API via backend so nobody sees the IP of our private system.
+
+### subscriptions
+This container have private access. It handles the logic to create, list and delete subscriptions and to store this information in mongodb. It also emmits messages to the rabbitmq broker.
+
+### mongo
+This container have private access. It stores data.
+
+### rabbitmq
+This container have private access. It handles the logic to enqueue messages and to deliver them.
+
+### mailing
+This container have private access. It handles the logic to consume the RabbitMQ queue.
+
+
 ### Folder structure
 
-Further development folder structure should continue express standards. Down below structure has been our goals when developing.
-Current code needs improvement.
+Further development, structure should continue express community standards. Down below structure has been my goal when developing.
+*Current code needs refactoring improvements to achive this structure.*
 
 ```
 # File names may vary
@@ -106,13 +122,17 @@ Start all the containers, then run the test files to operate with the database.
 - `docker-compose up -d --build`
 - `docker-compose run subscriptions npm run test`
 
-## Email sending
+## Sengin emails
 
-I have not configured any email library related. I would use any SMTP Relay to get a fast and guaranteed email deliverability and connect to the service. 
+Although I have not configured any email library related, i do have configured the message broker. Right now the RabbitMQ consummer would need to find the newsletter template and send the email to the `subscription.email`. 
+
+For production environments consider developing with Apache Kafka.
+
+Use any SMTP Relay to get a fast email deliverability without the need to configure a server.
 
 ## Improvements and suggestions
 
-- Refactor code and make it cleaner. 
+- Some code refactoring. 
 - Separate RabbitMQ enqueuer functions from the routes files.
 - Improve docker-compose rabbitmq healthycheck.
 - Make environments variables to define app vars. Examples: ports, hostnames...
