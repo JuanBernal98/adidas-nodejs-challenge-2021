@@ -42,15 +42,13 @@ Two requirements to make it work:
 - Docker
 - Docker compose
 
-### Get the project files
+### Testing the API
 
-Use git to download the files by cloning the repository `git clone https://github.com/JuanBernal98/adidas-nodejs-challenge-2021`
+Clone the repository. Build the containers. Run the test.
 
-### Bring up the containers
-
-Start the containers by running `docker-compose up -d`. It will start the containers and generate new folders like `./rabbitmq/db` where container "rabbitmq" will store its database contents. This happens due to the current docker-compose configuration.
-
-The idea is to only run the images from dockerhub
+- `git clone https://github.com/JuanBernal98/adidas-nodejs-challenge-2021`
+- `docker-compose up -d --build`
+- `docker-compose run subscriptions npm run test`
 
 ## Security
 
