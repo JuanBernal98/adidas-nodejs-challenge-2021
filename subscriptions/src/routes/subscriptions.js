@@ -1,23 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const amqlib = require('amqplib/callback_api');
 const Subscription = require('../models/subscription');
-const { findById } = require('../models/subscription');
-
-// moongodb connection
-mongoose.connect('mongodb://mongo:27017/subscriptions', { useNewUrlParser: true, useUnifiedTopology: true })
-    .catch((error) => {
-        console.error(`Can't connect to mongodb`);
-        process.exit(1);
-    });
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-    console.log('mongodb connected');
-});
-
 
 /**
  * All subscriptions

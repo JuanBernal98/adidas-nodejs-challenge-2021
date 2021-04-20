@@ -1,89 +1,181 @@
-const request = require('supertest');
 const app = require('../server.js');
 
-var subscription_created_id = null;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const expect = require('chai').expect;
 
-describe('Subscriptions Tests:', function () {
-    describe('Creating a new subscription', function () {
-        it('It should return the ID', function () {
-            request(app)
+chai.use(chaiHttp);
+chai.should();
+
+var subscriptionCreatedID;
+
+describe('Subscriptions', () => {
+
+    // Test creating a new subscription
+    describe("POST /api/subscription", () => {
+
+        // Required fileds
+        it("Newsletter should be a required field", (done) => {
+            chai.request(app)
                 .post('/api/subscription')
                 .send({
-                    'newsletter': 1,
-                    'email': 'bernalsierrajuan@gmail.com',
-                    'name': 'Juan',
-                    'gender': 'm',
-                    'birth': new Date(),
-                    'consent': true,
+                    "email": "test@adidas.com",
+                    "birth": "2017-03-07T00:00:00.000Z",
+                    "consent": true,
+                    "name": "name",
+                    "gender": "m",
                 })
-                .expect(200)
-                .end(function (err, res) {
-                    if (err) throw err;
-                    subscription_created_id = res;
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.text.should.contain('required');
+                    done();
                 });
         });
-        it('Should return confilct', function () {
-            request(app)
+
+        // Required field
+        it("Email should be a required field", (done) => {
+            chai.request(app)
                 .post('/api/subscription')
                 .send({
-                    'newsletter': 1, // wrong newsletter
-                    'email': 'bernalsierrajuan@gmail.com',
-                    'name': 'Juan',
-                    'gender': 'o',
-                    'birth': new Date(),
-                    'consent': true,
+                    "newsletter": 13,
+                    "birth": "2017-03-07T00:00:00.000Z",
+                    "consent": true,
+                    "name": "name",
+                    "gender": "m",
                 })
-                .expect(409)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.text.should.contain('required');
+                    done();
+                });
         });
-        it('Should return newsletter validation error', function () {
-            request(app)
+
+        // Required field
+        it("Date of birth should be a required field", (done) => {
+            chai.request(app)
                 .post('/api/subscription')
                 .send({
-                    'newsletter': 'qwe', // wrong newsletter
-                    'email': 'bernalsierra@juangmail.com',
-                    'name': 'Juan',
-                    'gender': 'm',
-                    'birth': new Date(),
-                    'consent': true,
+                    "newsletter": 13,
+                    "email": "test@adidas.com",
+                    "consent": true,
+                    "name": "name",
+                    "gender": "m",
                 })
-                .expect(400)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.text.should.contain('required');
+                    done();
+                });
         });
-        it('Should return email validation error', function () {
-            request(app)
+
+        // Required field
+        it("Consent should be a required field", (done) => {
+            chai.request(app)
                 .post('/api/subscription')
                 .send({
-                    'newsletter': 23,
-                    'email': 'bernalsierrajuangmail.com',
-                    'name': 'Juan',
-                    'gender': 'm',
-                    'birth': new Date(),
-                    'consent': true,
+                    "newsletter": 13,
+                    "email": "test@adidas.com",
+                    "birth": "2017-03-07T00:00:00.000Z",
+                    "name": "name",
+                    "gender": "m",
                 })
-                .expect(400)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.text.should.contain('required');
+                    done();
+                });
         });
+
+        // Trying to create a subscription
+        it("Should return the ID of the created subscription without optional fields [name, gender]", (done) => {
+            chai.request(app)
+                .post('/api/subscription')
+                .send({
+                    "newsletter": 13,
+                    "email": "test@adidas.com",
+                    "birth": "2017-03-07T00:00:00.000Z",
+                    "consent": true,
+                })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.text.should.be.a('string');
+                    subscriptionCreatedID = res.text;
+                    done();
+                });
+        });
+
+        // Trying to recreate newsletter conflict
+        it("Should return conflict when trying to duplicate newsletter/email both as PK", (done) => {
+            chai.request(app)
+                .post('/api/subscription')
+                .send({
+                    "newsletter": 13,
+                    "email": "test@adidas.com",
+                    "birth": "2017-03-07T00:00:00.000Z",
+                    "consent": true,
+                    "gender": "m",
+                })
+                .end((err, res) => {
+                    res.should.have.status(409);
+                    done();
+                });
+        });
+
     });
 
-    describe('Getting all subscriptions', function () {
-        it('It should return 200', function () {
-            request(app)
+    // Test getting all subscriptions
+    describe("GET /api/subscriptions", () => {
+        it("Should get all susbscriptions", (done) => {
+            chai.request(app)
                 .get('/api/subscriptions')
-                .expect(200)
-                .end(function (err, res) {
-                    if (err) throw err;
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('array');
+                    done();
                 });
         });
     });
 
-    describe('Delete one subscription', function () {
-        it('It should return 200', function () {
-            request(app)
-                .delete('/api/subscription')
-                .send({
-                    id: subscription_created_id
-                })
-                .expect(200)
-                .end(function (err, res) {
-                    if (err) throw err;
+    // Test getting subscription detail
+    describe("GET /api/subscription/:id", () => {
+        // GET 200
+        it("Should get one susbscription", (done) => {
+            chai.request(app)
+                .get(`/api/subscription/${subscriptionCreatedID}`)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    done();
+                });
+        });
+        // GET 404
+        it("Should not get one susbscription", (done) => {
+            chai.request(app)
+                .get(`/api/subscription/trytogetme`)
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    res.body.should.be.a('object');
+                    done();
+                });
+        });
+    });
+    describe("DELETE /api/subscription/:id", () => {
+        // DELETE 200
+        it("Should delete one subscription", (done) => {
+            chai.request(app)
+                .delete(`/api/subscription/${subscriptionCreatedID}`)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    done();
+                });
+        });
+        // DELETE 404
+        it("Should return 404 when trying to delete", (done) => {
+            chai.request(app)
+                .delete(`/api/subscription/trytodeleteme`)
+                .end((err, res) => {
+                    res.should.have.status(404);
+                    done();
                 });
         });
     });
