@@ -70,13 +70,15 @@ Images listed down below have `/app` folder as WORKDIR to store its nodejs code.
 - subscriptions
 - mailing
 
-Currently using `axios` package to make requests between containers.
+Currently using **axios** package to make requests and **MongoDB** NoSQL database to store our subscriptions.
 
-Depending on the application given to the software it might be better to have emails as primary key, and newsletters as a relation.
+Depending on the use given to the API it might be better to have newsletters as a relationship between tables. But considering that need we ought be using a SQL database.
 
-Subscriptions cannot be duplicated when creating them throught the API request. Restriction made up by looking the newsletter and email fields. This requirement is not a Schema validation.
+In this coded challenge, **subscriptions cannot be duplicated when created via our `POST /api/subscription` request**. 
 
-### Development Information
+**Restriction has been made up by looking the newsletter and email fields**. This restriction is not made by the database structure, has been made at the request.
+
+### Folder structure
 
 Further development folder structure should continue express standards. Down below structure has been our goals when developing.
 Current code needs improvement.
@@ -93,19 +95,30 @@ src
 
 ## Unit testing
 
-Used postman to test the api `docker-compose run subscriptions npm run test`. Unit testing needs more development.
-Subscriptions routes testing: `/app/src/test/subscriptions.test.js`
+### Susbscriptions
 
-When finished, add to Dockerfile CMD["node", "run", "test"]
+File is located at `/app/src/test/subscriptions.test.js`
+
+Packages used: **mocha**, **chai** and **chai-http**. 
+
+Start all the containers, then run the test files to operate with the database.
+
+- `docker-compose up -d --build`
+- `docker-compose run subscriptions npm run test`
+
+## Email sending
+
+I have not configured any email library related. I would use any SMTP Relay to get a fast and guaranteed email deliverability and connect to the service. 
 
 ## Improvements and suggestions
 
-- Refactor code and make it cleaner. Separate RabbitMQ enqueuer functions from the routes files.
-- Improve container rabbitmq healthycheck.
-- Make environments variables to define important vars. Examples: ports, hostnames...
+- Refactor code and make it cleaner. 
+- Separate RabbitMQ enqueuer functions from the routes files.
+- Improve docker-compose rabbitmq healthycheck.
+- Make environments variables to define app vars. Examples: ports, hostnames...
 - Improve security by adding CORS or a secret api check in our public-private backend communication.
-- Improve error handling and decide what to do in case our messsage rabbitmq fails at subscription creation.
+- Improve error handling and decide what to do in case our messsage rabbitmq fails at the subscription creation.
 - Decide HTTPS/HTTP, speed may be affected.
-- Use docker swarm to manage the our docker cluster.
+- Use docker swarm to manage our docker cluster?.
 - Set up CI/CD
-- Consider the use of Apache Kafka for real development
+- Consider the use of Apache Kafka vs RabbitMQ for real development
